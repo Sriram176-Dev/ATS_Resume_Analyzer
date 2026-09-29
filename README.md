@@ -59,40 +59,8 @@ The Vite dev server proxies `/api` to the API, so there is no CORS setup in deve
 
 ---
 
-## Configuration
 
-Server settings are validated at startup; the process refuses to start on bad or unsafe values (for example a short or placeholder `JWT_SECRET` in production). See [`server/.env.example`](server/.env.example).
 
-| Variable | Required | Default | Notes |
-|---|---|---|---|
-| `MONGODB_URI` | yes | | Local or Atlas connection string |
-| `JWT_SECRET` | yes | | 32+ random characters in production |
-| `GEMINI_API_KEY` | no | empty | Empty = rule-based recommendations only |
-| `GEMINI_MODEL` | no | `gemini-3.5-flash` | |
-| `NODE_ENV` | no | `development` | Set `production` when deployed |
-| `PORT` | no | `5000` | |
-| `FRONTEND_URL` | no | empty | Comma-separated origins, only if the web app is on a different origin than the API |
-| `TRUST_PROXY` | no | `0` | Set to `1` behind one reverse proxy (needed for correct per-IP rate limits) |
-| `MAX_UPLOAD_MB` | no | `5` | |
-| `ANALYSES_PER_HOUR` | no | `20` | Per-user cap (each analysis may call the AI) |
-| `SERVE_CLIENT` | no | `true` | Serve `client/dist` from the API process |
-
-Client settings (`client/.env.example`, all optional): `VITE_API_URL`, `VITE_SUPPORT_EMAIL`.
-
----
-
-## Deployment
-
-### Docker (single container + MongoDB)
-
-```bash
-cp .env.example .env            # set JWT_SECRET (and optionally GEMINI_API_KEY)
-docker compose up --build       # http://localhost:5000
-```
-
-The image is multi-stage, runs as a non-root user, and has a health check on `/api/health`. One process serves both the API and the built web app, so there is one origin and no CORS to configure. MongoDB is not published to the host.
-
-> Put a TLS-terminating proxy or platform (Nginx, Caddy, Render, Railway, Fly...) in front for HTTPS, and set `TRUST_PROXY=1`. The app does not force HTTPS itself so that it also works on plain HTTP behind a proxy.
 
 ### Platform checklist
 
