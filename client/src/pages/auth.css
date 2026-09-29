@@ -1,0 +1,10 @@
+.auth { display: grid; place-items: start center; padding: 56px 16px 80px; }
+.auth-card { width: min(440px, 100%); padding: 32px; }
+.auth-card h1 { font-size: var(--text-2xl); }
+.auth-lede { color: var(--muted); margin: 8px 0 24px; }
+.auth-switch { margin-top: 22px; text-align: center; font-size: var(--text-sm); color: var(--muted); }
+.rules { list-style: none; display: grid; gap: 4px; margin-top: 8px; font-size: var(--text-xs); color: var(--muted); }
+.rules li { display: flex; align-items: center; gap: 6px; }
+.rules li[data-met="true"] { color: var(--good); }
+.rules .dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid currentColor; display: grid; place-items: center; }
+@media (max-width: 480px) { .auth { padding-top: 28px; } .auth-card { padding: 22px; } }

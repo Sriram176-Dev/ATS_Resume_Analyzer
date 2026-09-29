@@ -1,0 +1,9 @@
+.contact { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 56px; align-items: start; padding-top: 56px; }
+.contact-intro h1 { font-size: var(--text-3xl); }
+.contact-intro p { margin-top: 14px; color: var(--ink-2); max-width: 44ch; }
+.contact-mail { display: flex; align-items: center; gap: 10px; }
+.contact-mail svg { color: var(--primary); }
+.contact-sent { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 12px 0; }
+.contact-sent svg { color: var(--good); }
+.contact-sent p { color: var(--ink-2); margin-bottom: 8px; }
+@media (max-width: 860px) { .contact { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; } }

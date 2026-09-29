@@ -1,0 +1,35 @@
+# Local / single-host production stack:  docker compose up --build
+# Copy .env.example to .env first and set JWT_SECRET (and optionally GEMINI_API_KEY).
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    # No published port: only the app container can reach the database.
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    ports:
+      - "${PORT:-5000}:5000"
+    environment:
+      NODE_ENV: production
+      PORT: "5000"
+      MONGODB_URI: mongodb://mongo:27017/ats-resume-analyzer
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env (see .env.example)}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash}
+      TRUST_PROXY: ${TRUST_PROXY:-0}
+      FRONTEND_URL: ${FRONTEND_URL:-}
+
+volumes:
+  mongo-data:

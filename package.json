@@ -1,0 +1,19 @@
+{
+  "name": "ats-resume-analyzer",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Full-stack ATS resume analyzer (React + Express + MongoDB).",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "install:all": "npm --prefix server ci && npm --prefix client ci",
+    "dev": "concurrently -n api,web -c blue,green \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server start",
+    "lint": "npm --prefix client run lint",
+    "test": "npm --prefix server test && npm --prefix client test",
+    "check": "npm run lint && npm test && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
