@@ -111,35 +111,5 @@ All routes are under `/api`. Errors share one shape: `{ "error": "message", "cod
 | `DELETE /resumes/:id` | yes | Delete an analysis |
 | `POST /contact` | no | Contact form (stored in the `contactmessages` collection) |
 
-## Security notes
 
-- Passwords hashed with bcrypt (cost 12); login is timing-equalised and returns one generic error for wrong email or password.
-- JWTs are pinned to HS256 with an expiry; secrets are validated at startup.
-- Input validation (zod) on every route; non-string payloads (NoSQL-injection attempts) are rejected.
-- Uploads: extension pre-check, size limit, in-memory only, real file-signature check, PDF page cap, and `pdf.js` runs with script evaluation disabled.
-- Rate limiting on the API overall, on auth (failed attempts), on analyses (per user), and on the contact form (plus a honeypot).
-- Helmet security headers with a strict CSP; CORS is closed unless `FRONTEND_URL` is set.
-- Users can only ever read or delete their own analyses (other users' ids return 404). Raw resume text is never returned by the API.
-- The session token is kept in `localStorage`. This is simple and common, but readable by any XSS bug; the strict CSP mitigates this. Moving to an `httpOnly` cookie is a reasonable future hardening step.
 
-## Privacy
-
-Uploaded resumes are parsed on the server and the analysis (including extracted text) is stored under the user's account until they delete it. When `GEMINI_API_KEY` is set, resume and job-description text is sent to Google's Gemini API to generate suggestions, and the UI tells users this. Review your own privacy policy and terms before a public launch.
-
-## Testing
-
-```bash
-npm test                    # both suites
-npm --prefix server test    # 67 tests: parsing, scoring, keywords, AI parsing, full API flows
-npm --prefix client test    # 22 tests: helpers, route guard, sign-in flow
-```
-
-API tests run the real Express stack (routing, validation, auth, uploads, PDF/DOCX parsing, scoring, report generation) and stub only the Mongoose model methods, so no database is needed to run them.
-
-## Known gaps / before a public launch
-
-- Routes moved under `/api` (e.g. `POST /api/resumes`); the old text-only `/resume/upload` endpoint from the original project is gone.
-- No privacy policy or terms of service page yet.
-- The contact form only stores messages in MongoDB; there's no email notification or admin inbox UI.
-- Docker image builds were not verified in this environment (Docker wasn't available); the server was verified to run correctly with production-only dependencies in an equivalent layout.
-- The `@google/generative-ai` SDK is used for AI suggestions; Google's newer `@google/genai` SDK was not adopted since it couldn't be tested here.
